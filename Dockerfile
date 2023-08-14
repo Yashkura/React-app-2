@@ -1,5 +1,5 @@
 # Stage 1 - The Build Process
-FROM node:16.13 as build-deps
+FROM node:16.13 as alpine
 WORKDIR /usr/src/app
 COPY package.json package-lock.json ./
 COPY . ./
@@ -13,6 +13,6 @@ RUN npm run build
 # Stage 2 - The Production Environment
 FROM nginx:1.12-alpine
 COPY nginx.conf /etc/nginx/nginx.conf
-COPY --from=build-deps /usr/src/app/dist /usr/share/nginx/html
+COPY --from=alpine /usr/src/app/build /usr/share/nginx/html
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
